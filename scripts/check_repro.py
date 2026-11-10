@@ -136,6 +136,7 @@ def main() -> int:
     if all_diffs:
         print("\n=== 差异明细（至多 20 条）===")
         for d in all_diffs:
+            print("::error::" + d.replace("\n", " ")[:180])
             print(" -", d)
         print("\n结论：重建产物与已提交产物存在超出容差的差异——"
               "若为少量边界档位/舍入差异，属已知跨平台浮点噪声；若为结构性差异，产物已陈旧或口径变更。")
