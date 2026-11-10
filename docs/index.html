@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHIA · 城市健康指数审计台（真实数据演示）</title>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header>
+  <div class="banner">REAL DATA · 全站数据来自《中国城市统计年鉴》面板与 WHO 环境空气质量数据库 V6.1，构建管线与哈希见「数据字典」页</div>
+  <div class="wrap">
+    <div class="brand"><h1>CHIA</h1><span class="en">City Health Index Audit · 城市健康指数审计台</span></div>
+    <nav>
+      <button data-view="overview" class="active">总览</button>
+      <button data-view="cities">城市</button>
+      <button data-view="audit">审计</button>
+      <button data-view="dictionary">数据字典</button>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap">
+
+<section id="view-overview" class="active">
+  <div class="card">
+    <h2>这是什么</h2>
+    <p>CHIA 不给城市排名，而是审计「城市健康指数」这类测量工具本身：<b>分数可信吗、分档稳吗、数据对得上吗</b>。
+    本站基于 <b><span id="ov-cities">—</span> 个地级市 × <span id="ov-period">—</span> 年《中国城市统计年鉴》真实面板</b>构建五维指数（经济民生、环境卫生、卫生服务、教育文化、设施保障），
+    并用 WHO 空气质量数据库做独立跨源校验。所有数值均可由 <code>scripts/build_data.py</code> 一键复现。</p>
+    <div class="note gap"><b>结局锚缺口（如实呈现）：</b>开放数据下地级市死亡率/发病率不可得，本演示不含疾病结局维度，也不做任何代理填补——这正是当前公开数据的真实边界。</div>
+    <div class="note"><b>审计对象声明：</b><span id="ov-audit-object">—</span></div>
+  </div>
+  <div class="grid kpis" id="overview-kpis" style="margin-top:14px"></div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>维度均分（全期合并）</h2><div id="overview-dims"></div><div class="hint">方向感知归一化到 0–100 后的全国均值。</div></div>
+    <div class="card"><h2>全国城市 PM2.5 均值走势（年鉴口径）</h2><div id="overview-pm25"></div><div class="hint">302 城年均 PM2.5（μg/m³），为环境卫生维度核心负向指标。</div></div>
+  </div>
+</section>
+
+<section id="view-cities">
+  <div class="card">
+    <h2>城市分档画像</h2>
+    <p class="hint" style="margin-bottom:0">分档 A–E 为全期合并分布的五分位，<b>同档内不排名</b>；「稳定率」为全随机权重抽样（Dirichlet(1)，<span id="ov-nmc2">—</span> 次）中分档保持不变的概率。</p>
+    <div class="toolbar">
+      <input type="text" id="city-search" class="grow" placeholder="搜索城市名…">
+      <select id="city-grade"><option value="">全部分档</option><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+    </div>
+    <div style="max-height:420px;overflow-y:auto">
+      <table><thead><tr><th>城市</th><th>分档</th><th class="num">总分</th><th class="num">稳定率</th><th class="num">PM2.5（2018）</th></tr></thead>
+      <tbody id="city-body"></tbody></table>
+    </div>
+    <div id="city-detail" class="detail" hidden></div>
+  </div>
+</section>
+
+<section id="view-audit">
+  <div class="grid two">
+    <div class="card"><h2>跨源一致性：年鉴 vs WHO（PM2.5）</h2><div id="audit-xval"></div><div class="hint">按拼音匹配 <span id="ov-who">—</span> 个城市；逐年 Pearson r 与偏倚（WHO − 年鉴，μg/m³）。</div></div>
+    <div class="card"><h2>散点抽检（1,500 对抽样）</h2><div id="audit-scatter"></div><div class="hint">若两源一致，点应贴近对角线。</div></div>
+  </div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>分档稳定性分布</h2><div id="audit-stability"></div><div class="hint">全随机权重（Dirichlet(1)，<span id="ov-nmc">—</span> 次）是「对权重完全无知」的参照系；多数城市-年档位并不稳固——这是「不做精确排名」的直接依据。</div></div>
+    <div class="card"><h2>现实场景：围绕基准权重的合理扰动</h2><div id="audit-perturb"></div><div class="hint">即使权重只在基准（等权）附近波动 ±20% / ±50%，分档也会大幅变动——比全随机更接近真实赋权场景，对「发布精确档位」的质疑更有力。</div></div>
+  </div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>分档转移矩阵（全随机权重）</h2><div id="audit-trans"></div><div class="hint">行=基准档（A 最优），列=模拟档；对角线=分档稳定率。档位间的双向流动说明五分位边界上的结论尤其不可靠。</div></div>
+    <div class="card"><h2>构造选择的一阶方差分解</h2><div id="audit-vardec"></div><div class="hint">哪类构造选择最影响全国均分。此结果与复合指标敏感性分析文献（Saisana et al. 2005）方向一致，属确证性发现。</div></div>
+  </div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>直接对照：清华城市健康指数（TUHI）发布结果</h2><div id="audit-tuhi"></div><div class="hint">用 TUHI 官网公开的 2020–2025 年城市总分（296 城，来源见数据字典页）直接对照本参考实现：排序收敛强（Spearman ≈ 0.74），但档位标签一致率低——两套都合理的构造给同一城市贴的档位经常不同，这正是「不应发布精确档位」的直接证据。</div></div>
+    <div class="card"><h2>已知组效度：东 / 中 / 西部</h2><div id="audit-region"></div><div class="hint">每城最新可算年截面；g=Hedges 效应量。指数应能区分理论上有序的已知组——这是不依赖结局锚就能执行的结构检验。</div></div>
+  </div>
+  <div class="grid two" style="margin-top:14px">
+    <div class="card"><h2>已知组效度：健康城市试点 vs 非试点</h2><div id="audit-pilot"></div><div class="hint">首批 38 个国家试点（2016-11 全国爱卫办；区级/县级试点不在地级市面板内）。试点城市五年维度得分是否系统性更高？</div></div>
+  </div>
+</section>
+
+<section id="view-dictionary">
+  <div class="card">
+    <h2>指标字典（21 项真实指标）</h2>
+    <p class="hint">全部由《中国城市统计年鉴》原始列透明计算，公式与覆盖率如下。</p>
+    <table><thead><tr><th>代码</th><th>指标</th><th>维度</th><th>单位</th><th>方向</th><th>覆盖率</th></tr></thead><tbody id="dict-body"></tbody></table>
+  </div>
+  <div class="card" style="margin-top:14px">
+    <h2>数据来源与复现</h2>
+    <div id="dict-sources"></div>
+    <pre class="cmd">python scripts/fetch_data.py          # 下载并 SHA256 校验原始数据
+python scripts/build_data.py          # 全量重建（面板/指数/审计/网页数据）</pre>
+    <p class="hint">原始数据与来源引用见 <code>data/raw/SOURCE.md</code>；构建摘要与输出哈希见 <code>data/processed/build_summary.json</code>。</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">CHIA <span id="ft-version">—</span> · 仅教育/演示用途；正式审计需按 <code>docs/METHODS.md</code> 补充结局锚数据与预注册。页面中的统计数字全部由构建产物注入，与 <code>data/processed/build_summary.json</code> 一致。</div>
+</footer>
+
+<script src="data/city_data.js"></script>
+<script src="data/indicator_dictionary.js"></script>
+<script src="assets/app.js"></script>
+</body>
+</html>

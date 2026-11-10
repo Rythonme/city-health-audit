@@ -1,0 +1,57 @@
+{
+  "built": true,
+  "version": "0.5.0",
+  "period": "2003-2024",
+  "n_cities": 302,
+  "n_rows_index": 6376,
+  "mean_grade_stability": 0.423,
+  "share_stable80_dirichlet": 0.12,
+  "perturbation": {
+    "±20%": {
+      "mean": 0.6869,
+      "share_stable80": 0.5852
+    },
+    "±50%": {
+      "mean": 0.6078,
+      "share_stable80": 0.328
+    }
+  },
+  "scenario_agreement": {
+    "n_cities": 302,
+    "entropy_same_as_base": 0.0695,
+    "pctile_same_as_base": 0.1026
+  },
+  "known_groups_n_pilot": 28,
+  "tuhi_direct": {
+    "mean_spearman_lag1": 0.7355,
+    "mean_kappa_lag1": 0.3752,
+    "n_matched_pairs": 1776,
+    "n_tuhi_cities": 296
+  },
+  "grade_thresholds": [
+    16.4,
+    23.1,
+    30.0,
+    42.2
+  ],
+  "who_matched_cities": 263,
+  "xval_latest": {
+    "year": 2020,
+    "n_matched": 212,
+    "pearson_r": 0.9758,
+    "mean_bias_who_minus_yearbook": -0.09,
+    "mape": 0.0243
+  },
+  "variance_decomposition": {
+    "within_dim_weights": 5.797572865454977,
+    "dim_weights": 57.012493016819604,
+    "normalization": 160.63814592902742,
+    "total_score_sd": 16.019195643456797
+  },
+  "outputs_sha256": {
+    "chuhi_panel.csv.gz": "f72d8a177e1fc49c3cb198cd4be8c10e76f35aeffc76aca294778af5fdd2934d",
+    "cross_validation_who.csv": "3a1ea58cf86bfa61f13f4027267f3dd1b2d4e4d263c7bb97355017da179472e5",
+    "city_data.js": "ab8e3132f79cb3005a78c64a277e730812b6227123d88de60590f74b16d1b663",
+    "indicator_dictionary.js": "d4246a5ea724d3b59694ea3a3fd216007f145d413a90ad88bcc1adbf098ae2c7"
+  }
+}

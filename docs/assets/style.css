@@ -1,0 +1,101 @@
+/* CHIA 审计台 · 简化版样式（纯 CSS，无外部依赖） */
+:root {
+  --bg: #f6f8f9;
+  --card: #ffffff;
+  --ink: #1f2937;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --accent: #0f766e;
+  --accent-soft: #ecfdf5;
+  --warn: #b45309;
+  --warn-soft: #fffbeb;
+  --gap: #dc2626;
+  --gap-soft: #fef2f2;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, "Segoe UI", "Microsoft YaHei", "PingFang SC", sans-serif;
+  background: var(--bg); color: var(--ink); line-height: 1.6; font-size: 15px;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px; }
+
+/* 顶部 */
+header { background: var(--card); border-bottom: 1px solid var(--line); }
+.banner {
+  background: var(--accent); color: #fff; font-size: 12.5px; padding: 6px 0; text-align: center;
+}
+.brand { display: flex; align-items: baseline; gap: 12px; padding: 18px 0 4px; }
+.brand h1 { font-size: 22px; letter-spacing: .5px; }
+.brand .en { color: var(--muted); font-size: 13px; }
+nav { display: flex; gap: 4px; padding: 8px 0 0; }
+nav button {
+  border: 0; background: none; padding: 10px 16px; font-size: 15px; cursor: pointer;
+  color: var(--muted); border-radius: 8px 8px 0 0;
+}
+nav button.active { color: var(--accent); font-weight: 600; box-shadow: inset 0 -2px 0 var(--accent); }
+nav button:hover { background: var(--accent-soft); color: var(--accent); }
+
+/* 版块 */
+section { display: none; padding: 26px 0 48px; }
+section.active { display: block; }
+h2 { font-size: 17px; margin: 26px 0 12px; }
+h2:first-child { margin-top: 0; }
+.card { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px 22px; }
+.grid { display: grid; gap: 14px; }
+.kpis { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
+.kpi .v { font-size: 30px; font-weight: 700; color: var(--accent); line-height: 1.15; }
+.kpi .l { color: var(--muted); font-size: 13px; margin-top: 2px; }
+.two { grid-template-columns: 1fr 1fr; }
+@media (max-width: 760px) { .two { grid-template-columns: 1fr; } }
+
+.note {
+  border-left: 3px solid var(--accent); background: var(--accent-soft);
+  padding: 10px 14px; border-radius: 0 8px 8px 0; font-size: 13.5px; margin: 10px 0;
+}
+.note.warn { border-color: var(--warn); background: var(--warn-soft); }
+.note.gap { border-color: var(--gap); background: var(--gap-soft); }
+.hint { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+
+/* 表格 */
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); }
+th { color: var(--muted); font-weight: 600; font-size: 12.5px; white-space: nowrap; }
+tbody tr:hover { background: #fafcfc; }
+.num { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* 徽章 */
+.badge { display: inline-block; width: 24px; text-align: center; border-radius: 6px; color: #fff; font-weight: 700; font-size: 13px; padding: 2px 0; }
+.g-A { background: #15803d; } .g-B { background: #65a30d; } .g-C { background: #d97706; }
+.g-D { background: #ea580c; } .g-E { background: #dc2626; }
+
+/* 控件 */
+input[type="text"], select {
+  padding: 8px 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14px; background: #fff;
+}
+input[type="text"]:focus, select:focus { outline: 2px solid var(--accent-soft); border-color: var(--accent); }
+.toolbar { display: flex; gap: 10px; margin: 14px 0; flex-wrap: wrap; }
+.toolbar .grow { flex: 1; }
+
+/* 城市列表 */
+.city-row { cursor: pointer; }
+.city-row.sel { background: var(--accent-soft); }
+.detail { margin-top: 18px; }
+.detail .head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.detail .head h3 { font-size: 18px; }
+.dimbar { display: grid; grid-template-columns: 130px 1fr 46px; gap: 10px; align-items: center; margin: 7px 0; font-size: 13.5px; }
+.dimbar .track { background: #eef2f3; border-radius: 6px; height: 16px; overflow: hidden; }
+.dimbar .fill { height: 100%; background: var(--accent); border-radius: 6px; transition: width .3s; }
+
+/* 图 */
+svg text { font-family: inherit; }
+.legend { display: flex; gap: 16px; font-size: 12.5px; color: var(--muted); margin-top: 6px; flex-wrap: wrap; }
+.legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; }
+
+/* 覆盖率条 */
+.cov { display: inline-block; width: 70px; height: 8px; background: #eef2f3; border-radius: 4px; overflow: hidden; vertical-align: middle; }
+.cov i { display: block; height: 100%; background: var(--accent); }
+
+/* 页脚 */
+footer { border-top: 1px solid var(--line); padding: 18px 0 30px; color: var(--muted); font-size: 12.5px; }
+footer code, p code, .hint code { background: #f1f5f5; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+pre.cmd { background: #f1f5f5; padding: 12px 14px; border-radius: 8px; font-size: 12.5px; overflow-x: auto; margin: 8px 0; }

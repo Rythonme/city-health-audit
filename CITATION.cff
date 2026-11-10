@@ -1,0 +1,34 @@
+cff-version: 1.2.0
+message: "If you use this software or the real-data benchmark, please cite it as below."
+title: "City Health Index Audit (CHIA): an open-source measurement audit toolkit and dashboard"
+type: software
+authors:
+  - name: "City Health Index Audit (CHIA) contributors"
+    website: "https://github.com/<OWNER>/city-health-audit"
+version: 0.6.0
+date-released: "2026-11-10"
+repository-code: "https://github.com/<OWNER>/city-health-audit"
+url: "https://<OWNER>.github.io/city-health-audit/"
+license: MIT
+abstract: >-
+  An open-source measurement-audit toolkit and static dashboard for evaluating
+  in-use city health indices. The project does not publish city rankings. All
+  shipped values are computed from real public data: the China City
+  Statistical Yearbook prefecture-level panel (302 cities, 2003-2018) and the
+  WHO Ambient Air Quality Database V6.1 as an independent cross-source
+  validation. The toolkit reports cross-source consistency, per-indicator
+  coverage and lineage, Monte Carlo grade stability under random weighting,
+  and first-order variance decomposition of construction choices.
+keywords:
+  - urban health
+  - healthy cities
+  - composite indicators
+  - measurement audit
+  - cross-source validation
+  - reproducible research
+  - health equity
+notes: >-
+  Replace <OWNER> with the GitHub account or organisation before the first
+  release. Papers should additionally cite the underlying data sources
+  (see data/raw/SOURCE.md), the OSF preregistration and the Zenodo archive
+  DOI once minted; see docs/PAPER_PLAN.md.

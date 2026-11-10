@@ -1,0 +1,198 @@
+{
+  "period": "2003-2024",
+  "n_cities": 302,
+  "indicators": {
+    "ECON_PC_GDP": {
+      "dim": "D2",
+      "desc": "人均地区生产总值（全市，当年价格）",
+      "unit": "元",
+      "direction": 1,
+      "n_available": 6073,
+      "n_total": 6417,
+      "coverage": 0.9464
+    },
+    "ECON_WAGE": {
+      "dim": "D2",
+      "desc": "城镇单位在岗职工平均工资（全市）",
+      "unit": "元",
+      "direction": 1,
+      "n_available": 5467,
+      "n_total": 6417,
+      "coverage": 0.852
+    },
+    "ECON_PC_RETAIL": {
+      "dim": "D2",
+      "desc": "人均社会消费品零售额（全市）",
+      "unit": "元/人",
+      "direction": 1,
+      "n_available": 6370,
+      "n_total": 6417,
+      "coverage": 0.9927
+    },
+    "ENV_PM25": {
+      "dim": "D3",
+      "desc": "PM2.5 年均浓度（全市）——低于更好",
+      "unit": "μg/m³",
+      "direction": -1,
+      "n_available": 6074,
+      "n_total": 6417,
+      "coverage": 0.9465
+    },
+    "ENV_SO2_PC": {
+      "dim": "D3",
+      "desc": "人均工业 SO2 排放（全市）——低于更好",
+      "unit": "吨/万人",
+      "direction": -1,
+      "n_available": 6087,
+      "n_total": 6417,
+      "coverage": 0.9486
+    },
+    "ENV_GREEN_COVER": {
+      "dim": "D3",
+      "desc": "建成区绿化覆盖率（市辖区）",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 5669,
+      "n_total": 6417,
+      "coverage": 0.8834
+    },
+    "ENV_GREEN_PC": {
+      "dim": "D3",
+      "desc": "人均绿地面积（市辖区）",
+      "unit": "m²/人",
+      "direction": 1,
+      "n_available": 3428,
+      "n_total": 6417,
+      "coverage": 0.5342
+    },
+    "ENV_SEWAGE": {
+      "dim": "D3",
+      "desc": "污水处理厂集中处理率（全市）",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 5939,
+      "n_total": 6417,
+      "coverage": 0.9255
+    },
+    "ENV_WASTE": {
+      "dim": "D3",
+      "desc": "生活垃圾无害化处理率（全市）",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 5859,
+      "n_total": 6417,
+      "coverage": 0.913
+    },
+    "SVC_HOSP_10K": {
+      "dim": "D4",
+      "desc": "每万人医院卫生院数（市辖区）。⚠ 口径断裂：2019 年起年鉴口径由「医院+卫生院」改为「医院」，前后不完全可比",
+      "unit": "个/万人",
+      "direction": 1,
+      "n_available": 6335,
+      "n_total": 6417,
+      "coverage": 0.9872
+    },
+    "SVC_BED_1K": {
+      "dim": "D4",
+      "desc": "每千人医院卫生院床位数（市辖区）。⚠ 同上，2019 年起仅医院口径",
+      "unit": "张/千人",
+      "direction": 1,
+      "n_available": 6331,
+      "n_total": 6417,
+      "coverage": 0.9866
+    },
+    "SVC_DOC_1K": {
+      "dim": "D4",
+      "desc": "每千人执业（助理）医师数（市辖区）。⚠ 同上，2019 年起仅医院口径",
+      "unit": "人/千人",
+      "direction": 1,
+      "n_available": 6340,
+      "n_total": 6417,
+      "coverage": 0.988
+    },
+    "SVC_INS_RATE": {
+      "dim": "D4",
+      "desc": "城镇职工医保参保人数占总人口比（全市）",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 4049,
+      "n_total": 6417,
+      "coverage": 0.631
+    },
+    "EDU_UNIV_10K": {
+      "dim": "D5",
+      "desc": "每万人在校大学生数（全市）＝普通本专科在校学生数÷年均人口×10⁴。自原始列透明重算，修复汇编直接列 2016 年起断更",
+      "unit": "人/万人",
+      "direction": 1,
+      "n_available": 6119,
+      "n_total": 6417,
+      "coverage": 0.9536
+    },
+    "EDU_LIB_PC": {
+      "dim": "D5",
+      "desc": "人均公共图书馆藏书量（全市）＝图书藏量÷总人口。自原始列透明重算（汇编人均列 2016 年起断更且口径存疑）",
+      "unit": "册/人",
+      "direction": 1,
+      "n_available": 6349,
+      "n_total": 6417,
+      "coverage": 0.9894
+    },
+    "EDU_THEATER_10K": {
+      "dim": "D5",
+      "desc": "每万人剧场影剧院数（全市）。⚠ 2019 年起年鉴停刊该表，登记为缺口不填补",
+      "unit": "个/万人",
+      "direction": 1,
+      "n_available": 3384,
+      "n_total": 6417,
+      "coverage": 0.5273
+    },
+    "INF_ROAD_PC": {
+      "dim": "D6",
+      "desc": "人均城市道路面积。实测汇编「全市」列实为市辖区值（2014–15 重叠年 r=1.000），故统一按市辖区口径重算",
+      "unit": "m²/人",
+      "direction": 1,
+      "n_available": 5840,
+      "n_total": 6417,
+      "coverage": 0.9101
+    },
+    "INF_BUS_10K": {
+      "dim": "D6",
+      "desc": "每万人公共汽电车保有量。实测汇编「全市」列实为市辖区值（2018 重叠年 r=1.000）。⚠ 2023–2024 年鉴停刊公交车辆表，登记为缺口",
+      "unit": "辆/万人",
+      "direction": 1,
+      "n_available": 5445,
+      "n_total": 6417,
+      "coverage": 0.8485
+    },
+    "INF_PENSION_RATE": {
+      "dim": "D6",
+      "desc": "城镇职工养老保险参保率（全市）",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 4084,
+      "n_total": 6417,
+      "coverage": 0.6364
+    },
+    "INF_UNEMP_RATE": {
+      "dim": "D6",
+      "desc": "城镇职工失业保险参保率（全市）",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 4086,
+      "n_total": 6417,
+      "coverage": 0.6367
+    },
+    "INF_CLEAN_FUEL": {
+      "dim": "D6",
+      "desc": "清洁燃料覆盖近似：用煤气+液化气人口占比（全市）。⚠ 2019 年起年鉴停刊「用气人口」表，登记为缺口不填补",
+      "unit": "%",
+      "direction": 1,
+      "n_available": 3988,
+      "n_total": 6417,
+      "coverage": 0.6215
+    }
+  },
+  "outcome_anchor_note": "开放数据下地级市死亡率/发病率不可得；D1 结局锚在真实面板中缺失，本审计如实呈现该缺口，不做代理填补。",
+  "pop_scope_note": "人口分母口径随年鉴卷变化：2003–2018 为年末总人口（重叠年实测＝户籍口径）；2019–2024 按卷可得性优先户籍（2019/2021/2022）、其次常住（2020/2023/2024）。常住与户籍不可跨口径直接比较，面板 pop_scope 列逐行标注。",
+  "series_break_note": "2019 年起年鉴口径变更：医院类指标由「医院+卫生院」改为「医院」；剧场影剧院、用气人口表停刊；公交车辆表 2023 年起停刊；工资表 2022 年起停刊；绿地面积表 2023 年起停刊。相关指标缺口如实登记，不插值填补。"
+}

@@ -1,0 +1,18 @@
+Package: chuhi
+Type: Package
+Title: Outcome-Anchored Validation Harness for City Health Indices
+Version: 0.1.0
+Authors@R: person("City Health Index Audit", "Contributors", email = "maintainer@example.org", role = c("aut", "cre"))
+Description: A domain-specific validation layer for auditing in-use city health
+    composite indices. Provides paired score construction (with and without
+    health outcomes), criterion and predictive validity comparison, bootstrap
+    uncertainty, Monte Carlo grade stability and dictionary utilities. Generic
+    composite-indicator construction and global sensitivity analysis are
+    delegated to the 'COINr' package; this package does not reimplement them.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.0.0)
+Imports: stats, utils
+Suggests: COINr, testthat (>= 3.0.0)
+RoxygenNote: 7.3.1
+Notes: Skeleton release. Maintainer email is a placeholder; replace before CRAN/JOSS submission.

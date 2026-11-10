@@ -1,0 +1,26 @@
+# CHIA 指标元数据字段规范 / metadata schema
+# 每个指标在进入审计前必须登记以下字段；缺元数据者一律标记「不可审计」。
+version: 1
+required_fields:
+  - indicator_id          # 唯一编码，如 D1_06
+  - dimension             # D1-D6 或 F
+  - name                  # 中文指标名
+  - direction             # up / down
+  - source                # 来源部门与数据产品
+  - spatial_scale         # 市域 / 区县 / 街道 / 栅格→市域
+  - frequency             # 月 / 年 / 周期 / 事件
+  - availability          # public(L1) / on-request(L2) / restricted(L3)
+  - role                  # outcome(效标锚) / determinant(决定因素) / process / equity
+  - unit                  # 单位，无量纲指标写 none
+  - denominator_definition# 分母口径（户籍 / 常住 / 建成区人口）
+  - measurement_year      # 实际测量年份，用于时滞对齐
+  - reporting_coverage    # 上报机构覆盖率 0-1
+  - missing_rate          # 缺失率 0-1
+  - lag_years             # 相对指数年份的时滞
+  - icd_or_code_version   # 疾病类指标须登记 ICD / 编码版本
+  - lineage               # 原始表 → 衍生表 → 标准化值 → 分域得分 的链路标识
+quality_rules:
+  - "疾病监测类指标缺 reporting_coverage 或 icd_or_code_version 时，不纳入年度审计"
+  - "reporting_coverage < 0.80 的指标不插补，直接标记 unavailable"
+  - "不可得指标登记为 availability_gap，不得静默删除"
+  - "所有元数据字段随审计结果一同发布，供外部复核"

@@ -1,0 +1,51 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# R
+.Rhistory
+.RData
+.Rproj.user
+*.Rproj
+packages/chuhi/src/*.o
+packages/chuhi/src/*.so
+packages/chuhi/src/*.dll
+packages/chuhi/..Rcheck/
+packages/chuhi/*.tar.gz
+
+# Node (if a local preview server is used)
+node_modules/
+npm-debug.log*
+
+# Generated / local-only
+.local/
+*.log
+tmp/
+scratch/
+
+# IMPORTANT: never commit restricted real data (L2/L3).
+data/private/
+data/restricted/
+*.parquet
+*.sav
+*.rds
+# data/raw 下的公开原始数据（《中国城市统计年鉴》汇编版 + WHO V6.1
+# + 2020–2025 卷分表 Excel）是本仓库可复现性的基石，随仓库分发；
+# 除此之外的个体级/受限数据一律禁止入库。
+!data/raw/*.dta
+!data/raw/*.xlsx
+!data/raw/yearbook_vols/**
+data/raw/baidu_inbox/
