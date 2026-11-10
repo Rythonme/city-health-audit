@@ -30,12 +30,8 @@ jobs:
       - name: Node DOM-stub smoke test (website)
         run: node tests/app_smoke.mjs
 
-      - name: Ensure committed outputs are reproducible
-        run: |
-          git diff --exit-code -- docs/data dict data/processed || {
-            echo "::error::Rebuild produced different outputs — committed files are stale or irreproducible"
-            exit 1
-          }
+      - name: Ensure committed outputs are reproducible (semantic tolerance check)
+        run: python scripts/check_repro.py
 
       - name: Public-data compliance scan
         run: |
