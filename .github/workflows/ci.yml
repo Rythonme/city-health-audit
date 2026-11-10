@@ -45,11 +45,12 @@ jobs:
           test -f data/raw/who_ambient_air_quality_database_v6.1_2024.xlsx
           test -d data/raw/yearbook_vols/2025
           # 禁止个体级/受限数据入库（data/raw 的两份公开文件除外）
-          if find . -type f \( -name '*.rds' -o -name '*.parquet' -o -name '*.sav' \) | grep -q .; then
+          # 注意排除 .github：本工作流的模式字符串自身会被递归匹配
+          if find . -path ./.git -prune -o -type f \( -name '*.rds' -o -name '*.parquet' -o -name '*.sav' \) -print | grep -q .; then
             echo "::error::Restricted data files must not be committed to this public repository"
             exit 1
           fi
-          if grep -R -n -E 'patient_id|id_card|身份证号' --exclude-dir=.git --exclude='*.md' . ; then
+          if grep -R -n -E 'patient_id|id_card|身份证号' --exclude-dir=.git --exclude-dir=.github --exclude='*.md' . ; then
             echo "::error::Potential personal identifiers detected"
             exit 1
           fi
