@@ -28,20 +28,23 @@ find . -type f \( -name "*.rds" -o -name "*.parquet" -o -name "*.sav" \) -print
 
 ## 2. 首次发布命令（需用户在本机终端执行）
 
-> WorkBuddy 会话不擅自向外部仓库推送。以下命令请在你自己的终端运行；GitHub Pages 源设为 `docs/`。
+> 本地仓库已就绪（2026-11-10，git init 完成，2 个提交，分支 main）。
+> WorkBuddy 沙箱无 GitHub 凭据，以下命令请在你自己的终端运行。
 
 ```bash
 cd "F:/00在研项目/04_健康城市/04_开源项目/city-health-audit"
 
-git init
-git add .
-git commit -m "Initial public release: CHIA measurement audit toolkit (real open data)"
-git branch -M main
-git remote add origin https://github.com/<OWNER>/city-health-audit.git
-git push -u origin main
-```
+# ① 在 github.com 上以 Rythonme 账号新建空仓库 city-health-audit（public，不要初始化 README）
+#    https://github.com/new
+#    （或安装 gh CLI 后： gh repo create Rythonme/city-health-audit --public --source=. --push ）
 
-推送后在仓库 Settings → Pages → Build and deployment 选择 **Deploy from a branch / main / docs**，得到站点 `https://<OWNER>.github.io/city-health-audit/`。
+# ② 推送（GCM 会弹出浏览器授权）
+git remote add origin https://github.com/Rythonme/city-health-audit.git
+git push -u origin main
+
+# ③ 启用站点：仓库 Settings → Pages → Build and deployment
+#    选 Deploy from a branch / main / docs，得到 https://rythonme.github.io/city-health-audit/
+```
 
 ## 3. 发布后三件事（按顺序）
 
