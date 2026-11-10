@@ -646,7 +646,11 @@ def tuhi_direct_audit(n: pd.DataFrame):
         # 分歧最大案例（按同年本实现组内名次差）
         m["chi_rank"] = m.groupby("panel_year")["overall"].rank(ascending=False)
         m["rank_gap"] = m["chi_rank"] - m["tuhi_rank"]
-        worst = (m.reindex(m["rank_gap"].abs().sort_values(ascending=False).index)
+        # 排序键先量化到 1e-4（远大于跨 CPU 浮点噪声），近乎并列的 gap
+        # 再按城市/年份决胜——否则 1e-15 噪声会让排序在平台间互换。
+        m["gap_key"] = m["rank_gap"].abs().round(4)
+        worst = (m.sort_values(["gap_key", "tuhi_city", "tuhi_year"],
+                               ascending=[False, True, True])
                    .head(12)[["tuhi_city", "tuhi_year", "group", "tuhi_score",
                               "tuhi_rank", "overall", "chi_rank", "rank_gap"]])
         res[key] = {

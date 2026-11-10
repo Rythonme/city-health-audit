@@ -51,7 +51,7 @@
   "outputs_sha256": {
     "chuhi_panel.csv.gz": "fb72fc5e3aa07798865f10ae09ccda1076d45eff490fec1f4bbe69cea8a59ada",
     "cross_validation_who.csv": "7a435ceb454cc156e9f82d5b1f410c25d52b5436c65b5b9533e82262dbbba458",
-    "city_data.js": "fbbce005b52975b422034ccd483488ba2b38960999ddc57d18ce5b006d6dec26",
+    "city_data.js": "609b87a4ccbf373a3cd952fb19185afc2db05e530badc6915a1af829fb6e850b",
     "indicator_dictionary.js": "88adf7d4e0a30eb1675d91bc644b78476e1e61c96f3048f939ec81f227b87824"
   }
 }
