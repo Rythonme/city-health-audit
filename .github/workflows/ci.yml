@@ -58,6 +58,7 @@ jobs:
 
       - name: Static site smoke check
         run: |
-          grep -q 'docs/data/city_data.js' docs/index.html
-          grep -q 'docs/assets/app.js' docs/index.html
+          grep -q 'src="data/city_data.js"' docs/index.html
+          grep -q 'src="data/indicator_dictionary.js"' docs/index.html
+          grep -q 'src="assets/app.js"' docs/index.html
           echo "Static site wiring ok"
