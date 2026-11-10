@@ -665,7 +665,8 @@ def tuhi_direct_audit(n: pd.DataFrame):
                    "档位一致率低源于口径定义不同（绝对分数段 vs 相对五分位），"
                    "排序相关与加权 kappa 为可比主指标；分歧案例仅呈现两套口径关注点差异，非对错判定。")
     pd.concat(out_rows, ignore_index=True).to_csv(
-        PROC / "tuhi_direct_audit.csv", index=False, encoding="utf-8-sig")
+        PROC / "tuhi_direct_audit.csv", index=False, encoding="utf-8-sig",
+        lineterminator="\n")
     return res
 
 
@@ -709,7 +710,8 @@ def who_cross_validation(panel: pd.DataFrame):
 
 def write_js(path: Path, var: str, obj) -> None:
     body = json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-    path.write_text(f"var {var} = {body};\n", encoding="utf-8")
+    # newline="\n"：跨平台字节一致（Windows 不产生 CRLF），保护 CI 可复现 diff
+    path.write_text(f"var {var} = {body};\n", encoding="utf-8", newline="\n")
 
 
 def main() -> int:
@@ -797,7 +799,8 @@ def main() -> int:
                     "unit": unit, "direction": "越高越好" if sign > 0 else "越低越好",
                     "source_column": col, "formula": formula,
                     "coverage": cov[code]["coverage"]})
-    pd.DataFrame(dic).to_csv(DICT_DIR / "indicator_dictionary.csv", index=False, encoding="utf-8-sig")
+    pd.DataFrame(dic).to_csv(DICT_DIR / "indicator_dictionary.csv", index=False,
+                             encoding="utf-8-sig", lineterminator="\n")
 
     # ---- 面板落盘 ----
     keep = (["city", "city_code", "year", "pop_scope"]
@@ -805,8 +808,11 @@ def main() -> int:
             + [d + "_score" for d in DIM_ORDER]
             + ["overall_raw", "overall", "grade", "grade_stability",
                "grade_entropy", "grade_pctile"])
-    n[keep].to_csv(PROC / "chuhi_panel.csv.gz", index=False, compression="gzip", encoding="utf-8-sig")
-    pd.DataFrame(xval).to_csv(PROC / "cross_validation_who.csv", index=False, encoding="utf-8-sig")
+    n[keep].to_csv(PROC / "chuhi_panel.csv.gz", index=False,
+                   compression={"method": "gzip", "mtime": 0},  # gzip 时间戳归零，保证逐字节可复现
+                   encoding="utf-8-sig", lineterminator="\n")
+    pd.DataFrame(xval).to_csv(PROC / "cross_validation_who.csv", index=False,
+                              encoding="utf-8-sig", lineterminator="\n")
 
     # ---- 网站数据 ----
     # 每城最新可算行的扰动稳定率（用于城市画像）
@@ -917,10 +923,10 @@ def main() -> int:
              {"data_mode": "real", "indicators": dic, "dims": DIMS,
               "role_levels": {}, "availability_levels": {}})
     (PROC / "coverage_report.json").write_text(
-        json.dumps(coverage_report, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps(coverage_report, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
 
     summary = {
-        "built": True, "version": "0.5.0", "period": meta["period"], "n_cities": meta["n_cities"],
+        "built": True, "version": "0.6.0", "period": meta["period"], "n_cities": meta["n_cities"],
         "n_rows_index": int(n["overall"].notna().sum()),
         "mean_grade_stability": round(mean_stab, 3),
         "share_stable80_dirichlet": round(share80_dir, 4),
@@ -944,7 +950,7 @@ def main() -> int:
         },
     }
     (PROC / "build_summary.json").write_text(
-        json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
+        json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8", newline="\n")
     print(json.dumps({k: summary[k] for k in
                       ("n_cities", "n_rows_index", "mean_grade_stability",
                        "grade_thresholds", "who_matched_cities", "xval_latest")},

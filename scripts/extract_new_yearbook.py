@@ -276,7 +276,7 @@ def main() -> int:
 
     raw = pd.DataFrame(all_rows)
     out_csv = PROC / "yearbook_new_panel.csv"
-    raw.to_csv(out_csv, index=False, encoding="utf-8-sig")
+    raw.to_csv(out_csv, index=False, encoding="utf-8-sig", lineterminator="\n")
 
     # ---------------------------------------------------------------- 重叠年审计（vol2019=数据2018 × 旧面板）
     old = pd.read_stata(OLD_DTA, convert_categoricals=False)
@@ -325,7 +325,7 @@ def main() -> int:
                       "median_rel_diff": round(med, 4), "note": note or ""})
     audit_df = pd.DataFrame(audit)
     audit_csv = PROC / "overlap_audit_2018.csv"
-    audit_df.to_csv(audit_csv, index=False, encoding="utf-8-sig")
+    audit_df.to_csv(audit_csv, index=False, encoding="utf-8-sig", lineterminator="\n")
 
     print(f"[extract] rows={len(raw)} years={sorted(raw['year'].unique())} cities={raw['city'].nunique()}")
     print(audit_df.to_string(index=False))

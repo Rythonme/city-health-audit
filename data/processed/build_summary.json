@@ -1,6 +1,6 @@
 {
   "built": true,
-  "version": "0.5.0",
+  "version": "0.6.0",
   "period": "2003-2024",
   "n_cities": 302,
   "n_rows_index": 6376,
@@ -49,9 +49,9 @@
     "total_score_sd": 16.019195643456797
   },
   "outputs_sha256": {
-    "chuhi_panel.csv.gz": "f72d8a177e1fc49c3cb198cd4be8c10e76f35aeffc76aca294778af5fdd2934d",
-    "cross_validation_who.csv": "3a1ea58cf86bfa61f13f4027267f3dd1b2d4e4d263c7bb97355017da179472e5",
-    "city_data.js": "ab8e3132f79cb3005a78c64a277e730812b6227123d88de60590f74b16d1b663",
-    "indicator_dictionary.js": "d4246a5ea724d3b59694ea3a3fd216007f145d413a90ad88bcc1adbf098ae2c7"
+    "chuhi_panel.csv.gz": "fb72fc5e3aa07798865f10ae09ccda1076d45eff490fec1f4bbe69cea8a59ada",
+    "cross_validation_who.csv": "7a435ceb454cc156e9f82d5b1f410c25d52b5436c65b5b9533e82262dbbba458",
+    "city_data.js": "fbbce005b52975b422034ccd483488ba2b38960999ddc57d18ce5b006d6dec26",
+    "indicator_dictionary.js": "88adf7d4e0a30eb1675d91bc644b78476e1e61c96f3048f939ec81f227b87824"
   }
 }
