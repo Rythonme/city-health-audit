@@ -4,7 +4,7 @@
 
 | 用途 | 环境 | 备注 |
 |---|---|---|
-| 数据构建 | Python 3.10+，`pandas`、`openpyxl`、`pypinyin` | 固定种子 `20261110`（Monte Carlo / 抽样） |
+| 数据构建 | Python 3.10+，`pip install -r requirements.txt`（版本已锁定，见下） | 固定种子 `20261110`（Monte Carlo / 抽样） |
 | 网站 | 任意现代浏览器 | 纯静态 HTML/CSS/JS，零 CDN，离线可运行 |
 | R 包（可选） | R ≥ 4.0（项目默认 R 4.6.0） | 基础 R 即可跑核心函数；COINr 为 Suggests |
 | CI | GitHub Actions `ubuntu-latest` + Python 3.10 | `.github/workflows/ci.yml` |
@@ -35,7 +35,7 @@ python -m http.server 8000 --directory docs
 
 - [ ] `fetch_data.py` 打印的两个 SHA256 与 `data/raw/SOURCE.md` 提交记录一致。
 - [ ] `build_data.py` 结尾输出的摘要（城市数 302、指数行数、跨源匹配 263 城）与 `data/processed/build_summary.json` 一致。
-- [ ] `git status` 显示重建后 `docs/data/*.js`、`dict/*.csv`、`data/processed/*` 无差异（逐字节可复现；numpy/pandas 大版本差异可能引起浮点噪声，见 CI 说明）。
+- [ ] `git status` 显示重建后 `docs/data/*.js`、`dict/*.csv`、`data/processed/*` 无差异（逐字节可复现；依赖版本已由 requirements.txt 锁定，勿使用未锁定安装）。
 - [ ] `dict/indicator_dictionary.csv` 为 21 行（不含表头）。
 - [ ] 仓库内除 `data/raw/` 公开文件外无 `*.rds` / `*.parquet` / `*.sav` 等受限数据。
 
