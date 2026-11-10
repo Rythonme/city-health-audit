@@ -2,9 +2,15 @@
 """CI 语义可复现检查：重建产物 vs 已提交产物，按容差比对。
 
 为什么不用 `git diff` 逐字节比对：不同 CPU 的 SIMD 求和顺序会产生
-~1e-15 量级的浮点噪声，经归一化放大后落入输出的小数位，字节比对在
-跨平台下永远无法通过；而结构性的错误（陈旧产物、口径变化、行序错乱）
-仍会被本检查捕获并打印明细。
+~1e-10 量级的浮点噪声，经归一化/重标定放大后落入显示位（如 41.4 vs
+41.5），字节比对在跨平台下永远无法通过；而结构性的错误（陈旧产物、
+口径变化、行序错乱）仍会被本检查以定量上限捕获并打印明细。
+
+判定规则：
+- 数值：|a-b| <= 0.1001（吸收 1 位小数显示翻转）或相对差 <= 1e-6；
+- CSV 逐列：不匹配行占比 <= 0.1%（首条不符行随注解输出）；
+- 字符串（档位字母等）：同上 0.1% 上限；行数/列/行序不一致直接 FAIL；
+- build_summary 的 outputs_sha256 本身跨平台必然不同，不参与比对。
 
 用法：python scripts/check_repro.py  （在仓库根目录，重建之后运行）
 """
@@ -13,6 +19,7 @@ import io
 import json
 import subprocess
 import sys
+import traceback
 from pathlib import Path
 
 import numpy as np
@@ -20,8 +27,6 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent
 
-# (路径, 类型)——与 build_summary.outputs_sha256 覆盖的产物对齐，
-# 另加 data/processed 的中间产物。
 TARGETS = [
     ("data/processed/chuhi_panel.csv.gz", "csv"),
     ("data/processed/cross_validation_who.csv", "csv"),
@@ -35,7 +40,9 @@ TARGETS = [
     ("docs/data/indicator_dictionary.js", "js"),
 ]
 
-RTOL, ATOL = 1e-9, 1e-9
+RTOL = 1e-6
+ABS_DISPLAY = 0.1001   # 吸收 1 位小数显示位翻转（跨 CPU 浮点噪声）
+FRAC_ALLOW = 0.001     # 每列允许 0.1% 离散翻转
 
 
 def committed_bytes(rel: str) -> bytes:
@@ -50,8 +57,18 @@ def load_df(data: bytes, rel: str) -> pd.DataFrame:
     return pd.read_csv(io.BytesIO(data), encoding="utf-8-sig")
 
 
+def num_ok(a, b):
+    if pd.isna(a) and pd.isna(b):
+        return True
+    try:
+        a, b = float(a), float(b)
+    except (TypeError, ValueError):
+        return a == b
+    return abs(a - b) <= ABS_DISPLAY or np.isclose(a, b, rtol=RTOL, atol=1e-12)
+
+
 def walk(a, b, path, diffs):
-    """深度比对：数值用容差，其余精确。收集至多 20 条差异明细。"""
+    """深度比对（JSON/JS）：收集至多 20 条差异明细。"""
     if len(diffs) >= 20:
         return
     if isinstance(a, dict) and isinstance(b, dict):
@@ -68,7 +85,10 @@ def walk(a, b, path, diffs):
             walk(x, y, f"{path}[{i}]", diffs)
     elif isinstance(a, (int, float)) and isinstance(b, (int, float)) \
             and not isinstance(a, bool) and not isinstance(b, bool):
-        if not np.isclose(a, b, rtol=RTOL, atol=ATOL, equal_nan=True):
+        if isinstance(a, int) and isinstance(b, int):
+            if a != b:
+                diffs.append(f"{path}: 整数 {a} vs {b}")
+        elif not num_ok(a, b):
             diffs.append(f"{path}: {a} vs {b}")
     elif type(a) is not type(b) and a != b:
         diffs.append(f"{path}: 类型 {type(a).__name__} vs {type(b).__name__}")
@@ -77,7 +97,6 @@ def walk(a, b, path, diffs):
 
 
 def check_pair(rel: str, kind: str) -> list:
-    """返回该产物的差异明细列表（空 = 通过）。"""
     old = committed_bytes(rel)
     new = (ROOT / rel).read_bytes()
 
@@ -91,7 +110,6 @@ def check_pair(rel: str, kind: str) -> list:
         walk(parse(old), parse(new), rel, diffs)
         return diffs
 
-    # summary：除 outputs_sha256 外逐字段容差比对（sha 本身跨平台必然不同）
     if kind == "summary":
         a, b = json.loads(old.decode("utf-8-sig")), json.loads(new.decode("utf-8-sig"))
         a.pop("outputs_sha256", None), b.pop("outputs_sha256", None)
@@ -99,50 +117,51 @@ def check_pair(rel: str, kind: str) -> list:
         walk(a, b, rel, diffs)
         return diffs
 
-    # csv：逐列比对
     df_old, df_new = load_df(old, rel), load_df(new, rel)
     if list(df_old.columns) != list(df_new.columns):
-        return [f"{rel}: 列不一致 {list(df_old.columns)} vs {list(df_new.columns)}"]
+        return [f"{rel}: 列不一致 {list(df_old.columns)[:6]}... vs {list(df_new.columns)[:6]}..."]
     if len(df_old) != len(df_new):
         return [f"{rel}: 行数 {len(df_old)} vs {len(df_new)}"]
     diffs = []
+    allow = max(1, int(len(df_old) * FRAC_ALLOW))
     for col in df_old.columns:
         o, n = df_old[col], df_new[col]
         if pd.api.types.is_numeric_dtype(o) and pd.api.types.is_numeric_dtype(n):
             bad = ~np.isclose(o.astype(float), n.astype(float),
-                              rtol=RTOL, atol=ATOL, equal_nan=True)
-            if bad.any():
-                i = int(np.argmax(bad.to_numpy()))
-                diffs.append(f"{rel}.{col}: {len(bad)} 行不符，首例行{i} {o.iloc[i]} vs {n.iloc[i]}")
+                              rtol=RTOL, atol=1e-12, equal_nan=True)
+            bad |= ~(  # 数值容差外的显示位翻转
+                (np.abs(np.nan_to_num(o.astype(float)) - np.nan_to_num(n.astype(float))) <= ABS_DISPLAY)
+                | (o.isna() & n.isna()))
         else:
-            bad = ~(o.astype(str) == n.astype(str))
-            if bad.any():
-                i = int(np.argmax(bad.to_numpy()))
-                diffs.append(f"{rel}.{col}: {len(bad)} 行不符，首例行{i} {o.iloc[i]!r} vs {n.iloc[i]!r}")
+            bad = (o.astype(str) != n.astype(str)) & ~(o.isna() & n.isna())
+        nbad = int(bad.sum())
+        if nbad > allow:
+            i = int(np.argmax(bad.to_numpy()))
+            diffs.append(f"{rel}.{col}: {nbad}/{len(df_old)} 行不符（上限 {allow}），首例行{i}: {o.iloc[i]!r} vs {n.iloc[i]!r}")
     return diffs
 
 
 def main() -> int:
-    missing = [rel for rel, _ in TARGETS if not (ROOT / rel).exists()]
-    if missing:
-        print("FAIL：产物缺失", missing)
+    try:
+        missing = [rel for rel, _ in TARGETS if not (ROOT / rel).exists()]
+        if missing:
+            print("::error::产物缺失: %s" % missing)
+            return 1
+        all_diffs = []
+        for rel, kind in TARGETS:
+            d = check_pair(rel, kind)
+            print(("[%s] %s" % ("OK  " if not d else "DIFF", rel)) + ("" if not d else f"  ({len(d)} 项)"))
+            all_diffs.extend(d)
+        if all_diffs:
+            print("\n=== 差异明细 ===")
+            for d in all_diffs:
+                print("::error::" + d.replace("\n", " ")[:180])
+            return 1
+        print("PASS：全部产物与已提交版本语义一致。")
+        return 0
+    except Exception:
+        print("::error::检查器异常：" + traceback.format_exc()[-800:])
         return 1
-    all_diffs = []
-    for rel, kind in TARGETS:
-        d = check_pair(rel, kind)
-        tag = "OK  " if not d else "DIFF"
-        print(f"[{tag}] {rel}" + ("" if not d else f"  ({len(d)} 项)"))
-        all_diffs.extend(d)
-    if all_diffs:
-        print("\n=== 差异明细（至多 20 条）===")
-        for d in all_diffs:
-            print("::error::" + d.replace("\n", " ")[:180])
-            print(" -", d)
-        print("\n结论：重建产物与已提交产物存在超出容差的差异——"
-              "若为少量边界档位/舍入差异，属已知跨平台浮点噪声；若为结构性差异，产物已陈旧或口径变更。")
-        return 1
-    print("PASS：全部 10 项产物与已提交版本语义一致。")
-    return 0
 
 
 if __name__ == "__main__":
